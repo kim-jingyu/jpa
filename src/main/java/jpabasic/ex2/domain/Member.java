@@ -1,8 +1,6 @@
 package jpabasic.ex2.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,9 +10,11 @@ public class Member {
 
     @Id @GeneratedValue
     private Long id;            // PK
-    private Long teamId;        // FK, 참조 대신에 외래 키를 그대로 사용한다.
-    private String username;
-
+//    private Long teamId;        // FK, 참조 대신에 외래 키를 그대로 사용한다.
+    private String userName;
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
     public Member() {
     }
 }

@@ -18,14 +18,12 @@ public class Ex1HelloJpaApplication {
 		tx.begin();
 
 		try{
-			Member member1 = new Member(1L, "member1");
+			Member member1 = new Member();
+			Member member2 = new Member();
+//			Member member3 = new Member();
 			em.persist(member1);
-
-			em.flush();
-
-			Member memberNew = em.find(Member.class, 1L);
-
-			em.remove(memberNew);
+			em.persist(member2);
+//			em.persist(member3);
 
 			tx.commit();
 		}catch (Exception e){

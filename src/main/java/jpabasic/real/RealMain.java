@@ -7,6 +7,9 @@ import jakarta.persistence.Persistence;
 import jpabasic.real.domain.*;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static jpabasic.real.domain.OrderStatus.*;
 
 @Slf4j
@@ -24,9 +27,15 @@ public class RealMain {
             member1.setCity("seoul");
             em.persist(member1);
 
+            Delivery delivery = new Delivery();
+            delivery.setCity("seoul");
+            delivery.setStatus(DeliveryStatus.COMPLETE);
+            em.persist(delivery);
+
             Order order1 = new Order();
             order1.setStatus(COMPLETE);
             order1.setMember(member1);
+            order1.setDelivery(delivery);
             em.persist(order1);
 
             Item itemA = new Item();
@@ -34,10 +43,15 @@ public class RealMain {
             itemA.setStockQuantity(99);
             em.persist(itemA);
 
+            Category category = new Category();
+            category.setName("햄버거");
+            category.setItems(getItem(itemA));
+            em.persist(category);
+
             OrderItem orderItem = new OrderItem();
             orderItem.setOrderPrice(8000);
             orderItem.setCount(1);
-            orderItem.setOrder(order1);
+            orderItem.setItem(itemA);
             orderItem.setOrder(order1);
             em.persist(orderItem);
 
@@ -58,5 +72,11 @@ public class RealMain {
             em.close();
         }
         emf.close();
+    }
+
+    private static List<Item> getItem(Item itemA) {
+        List<Item> items = new ArrayList<>();
+        items.add(itemA);
+        return items;
     }
 }

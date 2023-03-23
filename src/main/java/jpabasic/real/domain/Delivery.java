@@ -18,6 +18,6 @@ public class Delivery {
     private String city;
     private String street;
     private String zipcode;
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private DeliveryStatus status;
 }

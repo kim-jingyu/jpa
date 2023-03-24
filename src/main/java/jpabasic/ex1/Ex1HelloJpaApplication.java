@@ -1,11 +1,9 @@
 package jpabasic.ex1;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 import jpabasic.ex1.domain.Member;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.jpa.internal.PersistenceUnitUtilImpl;
 
 @Slf4j
 public class Ex1HelloJpaApplication {
@@ -19,11 +17,19 @@ public class Ex1HelloJpaApplication {
 
 		try{
 			Member member1 = new Member();
-			Member member2 = new Member();
-//			Member member3 = new Member();
+			member1.setUsername("user");
 			em.persist(member1);
-			em.persist(member2);
-//			em.persist(member3);
+			em.flush();
+			em.clear();
+
+			Member member = em.getReference(Member.class, 1L);
+			member.getUsername();
+
+			log.info("프록시 인스턴스의 초기화 여부 = {}", Persistence.getPersistenceUtil().isLoaded(member));
+			log.info("프록시 클래스 확인 = {}", member.getClass().getName());
+
+			log.info("프록시 강제 초기화");
+			org.hibernate.Hibernate.initialize(member);
 
 			tx.commit();
 		}catch (Exception e){

@@ -1,6 +1,7 @@
 package jpabasic.real.domain;
 
 import jakarta.persistence.*;
+import jpabasic.real.domain.item.Item;
 import lombok.Getter;
 import lombok.Setter;
 

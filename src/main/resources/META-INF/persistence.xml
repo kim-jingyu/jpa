@@ -2,13 +2,16 @@
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.1">
     <persistence-unit name="hello">
         <class>jpabasic.real.domain.Member</class>
-        <class>jpabasic.real.domain.Item</class>
+        <class>jpabasic.real.domain.item.Item</class>
         <class>jpabasic.real.domain.Order</class>
         <class>jpabasic.real.domain.OrderItem</class>
         <class>jpabasic.real.domain.OrderStatus</class>
         <class>jpabasic.real.domain.Delivery</class>
         <class>jpabasic.real.domain.Category</class>
         <class>jpabasic.real.domain.DeliveryStatus</class>
+        <class>jpabasic.real.domain.item.Album</class>
+        <class>jpabasic.real.domain.item.Book</class>
+        <class>jpabasic.real.domain.item.Movie</class>
         <properties>
             <!-- 필수 속성 -->
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>

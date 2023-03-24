@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jpabasic.real.domain.*;
+import jpabasic.real.domain.item.Album;
+import jpabasic.real.domain.item.Item;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -38,20 +40,21 @@ public class RealMain {
             order1.setDelivery(delivery);
             em.persist(order1);
 
-            Item itemA = new Item();
-            itemA.setName("치즈버거");
-            itemA.setStockQuantity(99);
-            em.persist(itemA);
+            Album album = new Album();
+            album.setName("치즈버거");
+            album.setArtist("맥도날드");
+            album.setStockQuantity(99);
+            em.persist(album);
 
             Category category = new Category();
             category.setName("햄버거");
-            category.setItems(getItem(itemA));
+            category.setItems(getItem(album));
             em.persist(category);
 
             OrderItem orderItem = new OrderItem();
             orderItem.setOrderPrice(8000);
             orderItem.setCount(1);
-            orderItem.setItem(itemA);
+            orderItem.setItem(album);
             orderItem.setOrder(order1);
             em.persist(orderItem);
 

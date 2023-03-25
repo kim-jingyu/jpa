@@ -8,6 +8,8 @@ import jpabasic.ex2.domain.Member;
 import jpabasic.ex2.domain.Team;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 @Slf4j
 public class Ex2Main {
     public static void main(String[] args) {
@@ -18,7 +20,7 @@ public class Ex2Main {
         tx.begin();
 
         try {
-            lazyLoadingEagerLoading(em);
+            lazyLoadingEagerLoading2(em);
 
             tx.commit();
         } catch (Exception e) {
@@ -29,7 +31,38 @@ public class Ex2Main {
         emf.close();
     }
 
-    private static void lazyLoadingEagerLoading(EntityManager em) {
+    private static void lazyLoadingEagerLoading2(EntityManager em) {
+        Team teamA = new Team();
+        teamA.setName("RealMadrid");
+        em.persist(teamA);
+
+        Team teamB = new Team();
+        teamB.setName("Barcelona");
+        em.persist(teamB);
+
+        Member member1 = new Member();
+        member1.setUserName("Modric");
+        member1.setTeam(teamA);
+        em.persist(member1);
+
+        Member member2 = new Member();
+        member2.setUserName("Lewandowski");
+        member2.setTeam(teamA);
+        em.persist(member2);
+
+        em.flush();
+        em.clear();
+
+        // SQL : select * from Member
+        // SQL : select * from Team where TEAM_ID = member.team_id
+        List<Member> members = em.createQuery("select m from Member m join fetch m.team", Member.class)
+                .getResultList();
+    }
+
+    /**
+     * 지연로딩, 즉시로딩
+     */
+    private static void lazyLoadingEagerLoading1(EntityManager em) {
         Team team = new Team();
         team.setName("RealMadrid");
         em.persist(team);

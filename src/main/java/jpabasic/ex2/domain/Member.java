@@ -8,11 +8,11 @@ import lombok.Setter;
 @Getter @Setter
 public class Member  extends BaseEntity{
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;            // PK
 //    private Long teamId;        // FK, 참조 대신에 외래 키를 그대로 사용한다.
     private String userName;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_ID")
     private Team team;
     public Member() {

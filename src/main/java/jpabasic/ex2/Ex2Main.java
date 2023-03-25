@@ -18,29 +18,7 @@ public class Ex2Main {
         tx.begin();
 
         try {
-            Team teamA = new Team();
-            teamA.setName("teamA");
-            em.persist(teamA);
-
-            Member member1 = new Member();
-            member1.setUserName("member1");
-
-            Member member2 = new Member();
-            member2.setUserName("member2");
-
-            // 연과관계 역방향 - 설정
-            teamA.getMembers().add(member1);
-            teamA.getMembers().add(member2);
-
-            // 연관관계 주인 - 설정
-            member1.setTeam(teamA);
-            em.persist(member1);
-            member2.setTeam(teamA);
-            em.persist(member2);
-
-            Team foundTeam = em.find(Team.class, teamA.getId());
-            int memberSize = foundTeam.getMembers().size();
-            log.info("memberSize = {}", memberSize);
+            lazyLoadingEagerLoading(em);
 
             tx.commit();
         } catch (Exception e) {
@@ -49,6 +27,57 @@ public class Ex2Main {
             em.close();
         }
         emf.close();
+    }
+
+    private static void lazyLoadingEagerLoading(EntityManager em) {
+        Team team = new Team();
+        team.setName("RealMadrid");
+        em.persist(team);
+
+        Member member = new Member();
+        member.setUserName("Modric");
+        member.setTeam(team);
+        em.persist(member);
+
+        em.flush();
+        em.clear();
+
+        Member member1 = em.find(Member.class, member.getId());
+
+        System.out.println("member1.getTeam().getClass() = " + member1.getTeam().getClass()); // 프록시 객체 찾기
+
+        System.out.println("=================");
+        member1.getTeam().getName();
+        System.out.println("=================");
+    }
+
+    /**
+     * 연관관계 주인
+     */
+    private static void findRelationalOwner(EntityManager em) {
+        Team teamA = new Team();
+        teamA.setName("teamA");
+        em.persist(teamA);
+
+        Member member1 = new Member();
+        member1.setUserName("member1");
+
+        Member member2 = new Member();
+        member2.setUserName("member2");
+
+        // 연과관계 역방향 - 설정
+        teamA.getMembers().add(member1);
+        teamA.getMembers().add(member2);
+
+        // 연관관계 주인 - 설정
+        member1.setTeam(teamA);
+        em.persist(member1);
+        member2.setTeam(teamA);
+        em.persist(member2);
+
+        Team foundTeam = em.find(Team.class, teamA.getId());
+        int memberSize = foundTeam.getMembers().size();
+        log.info("memberSize = {}", memberSize);
     }
 
     private static void test1(EntityManager em) {

@@ -47,7 +47,7 @@ public class Ex2Main {
 
         Member member2 = new Member();
         member2.setUserName("Lewandowski");
-        member2.setTeam(teamA);
+        member2.setTeam(teamB);
         em.persist(member2);
 
         em.flush();
@@ -55,7 +55,7 @@ public class Ex2Main {
 
         // SQL : select * from Member
         // SQL : select * from Team where TEAM_ID = member.team_id
-        List<Member> members = em.createQuery("select m from Member m join fetch m.team", Member.class)
+        List<Member> members = em.createQuery("select m from Member m", Member.class)
                 .getResultList();
     }
 

@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @SequenceGenerator(
@@ -45,6 +49,16 @@ public class Member {
             )
     })
     private Address companyAddress;
+
+    // 값 타입 컬렉션
+    @ElementCollection
+    @CollectionTable(name = "FAVORITE_FOOD", joinColumns = @JoinColumn(name = "MEMBER_ID"))
+    @Column(name = "FOOD_NAME") // String 처럼 값이 내가 지정하지 않은 하나일 때는 컬럼 명을 지정할 수 있다.
+    private Set<String> favoriteFoods = new HashSet<>();
+
+    @ElementCollection
+    @CollectionTable(name = "ADDRESS", joinColumns = @JoinColumn(name = "MEMBER_ID"))
+    private List<Address> addressesHistory = new ArrayList<>();
 
     public Member() {
     }

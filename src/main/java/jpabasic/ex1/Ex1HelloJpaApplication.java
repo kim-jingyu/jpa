@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.jpa.internal.PersistenceUnitUtilImpl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 public class Ex1HelloJpaApplication {
@@ -20,7 +23,7 @@ public class Ex1HelloJpaApplication {
 		tx.begin();
 
 		try{
-			valueTypeCopyTest(em);
+			valueTypeCollectionTest(em);
 
 			tx.commit();
 		}catch (Exception e){
@@ -31,6 +34,20 @@ public class Ex1HelloJpaApplication {
 
 		emf.close();
 
+	}
+
+	private static void valueTypeCollectionTest(EntityManager em) {
+		Address address1 = new Address("Seoul", "Gangnam", "11111");
+		Address address2 = new Address("Busan", "Seomyun", "22222");
+
+		Member member = new Member();
+		member.setUsername("user");
+		em.persist(member);
+
+		Member member2 = new Member();
+		member2.setUsername("user2");
+		member2.setAddressesHistory(new ArrayList<>(Arrays.asList(address1, address2)));
+		em.persist(member2);
 	}
 
 	private static void valueTypeCopyTest(EntityManager em) {

@@ -20,16 +20,7 @@ public class Ex1HelloJpaApplication {
 		tx.begin();
 
 		try{
-			Address homeAddress = new Address("Seoul", "Gangnam", "11111");
-			Address companyAddress = new Address("Busan", "Seomyun", "22222");
-			Period period = new Period(LocalDateTime.now(), LocalDateTime.now());
-
-			Member userA = new Member();
-			userA.setUsername("userA");
-			userA.setHomeAddress(homeAddress);
-			userA.setCompanyAddress(companyAddress);
-			userA.setWorkPeriod(period);
-			em.persist(userA);
+			valueTypeCopyTest(em);
 
 			tx.commit();
 		}catch (Exception e){
@@ -40,6 +31,36 @@ public class Ex1HelloJpaApplication {
 
 		emf.close();
 
+	}
+
+	private static void valueTypeCopyTest(EntityManager em) {
+		Address address = new Address("NewYork", "BroadWay", "11111");
+
+		Member memberA = new Member();
+		memberA.setUsername("memberA");
+		memberA.setHomeAddress(address);
+		em.persist(memberA);
+
+		// 값 타입 복사
+		Address copyAddress = new Address("Paris", address.getStreet(), address.getZipcode());
+
+		Member memberB = new Member();
+		memberB.setUsername("memberB");
+		memberB.setHomeAddress(copyAddress);
+		em.persist(memberB);
+	}
+
+	private static void embeddedTest(EntityManager em) {
+		Address homeAddress = new Address("Seoul", "Gangnam", "11111");
+		Address companyAddress = new Address("Busan", "Seomyun", "22222");
+		Period period = new Period(LocalDateTime.now(), LocalDateTime.now());
+
+		Member userA = new Member();
+		userA.setUsername("userA");
+		userA.setHomeAddress(homeAddress);
+		userA.setCompanyAddress(companyAddress);
+		userA.setWorkPeriod(period);
+		em.persist(userA);
 	}
 
 	private static void proxyTest(EntityManager em) {

@@ -28,6 +28,24 @@ public class Member {
     @Lob
     private String description;
 
+    @Embedded
+    private Period workPeriod;
+
+    @Embedded
+    private Address homeAddress;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name="city",
+                    column=@Column(name = "COMPANY_CITY")),
+            @AttributeOverride(name="street",
+                    column=@Column(name = "COMPANY_STREET")),
+            @AttributeOverride(name = "zipcode",
+                    column=@Column(name = "COMPANY_ZIPCODE")
+            )
+    })
+    private Address companyAddress;
+
     public Member() {
     }
 

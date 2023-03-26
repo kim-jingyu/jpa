@@ -2,15 +2,14 @@ package jpabasic.ex1;
 
 import jakarta.persistence.*;
 import jpabasic.ex1.domain.Address;
+import jpabasic.ex1.domain.AddressEntity;
 import jpabasic.ex1.domain.Member;
 import jpabasic.ex1.domain.Period;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.jpa.internal.PersistenceUnitUtilImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 public class Ex1HelloJpaApplication {
@@ -23,7 +22,34 @@ public class Ex1HelloJpaApplication {
 		tx.begin();
 
 		try{
-			valueTypeCollectionTest(em);
+			Member member = new Member();
+			member.setUsername("member1");
+			member.setHomeAddress(new Address("Seoul", "Gangnam", "11111"));
+
+			// 값 타입 저장
+			member.getFavoriteFoods().add("치킨");
+			member.getFavoriteFoods().add("족발");
+			member.getFavoriteFoods().add("피자");
+
+			member.getAddressesHistory().add(new AddressEntity("oldCity1", "oldStreet1", "22222"));
+			member.getAddressesHistory().add(new AddressEntity("oldCity2", "oldStreet2", "33333"));
+
+			em.persist(member);
+
+			em.flush();
+			em.clear();
+
+			// 값 타입 조회 : 값 타입 컬렉션은 지연 로딩이다.
+			Member foundMember = em.find(Member.class, member.getId());
+//
+//			// 값 타입 수정 : 완전히 새로운 인스턴스로 갈아끼워야 한다.
+//			// 치킨 -> 한식 ( String 자체도 값 타입 )
+//			foundMember.getFavoriteFoods().remove("치킨");
+//			foundMember.getFavoriteFoods().add("한식");
+//
+//			// equals and hashcode. remove
+//			foundMember.getAddressesHistory().remove(new AddressEntity("oldCity1", "oldStreet1", "22222"));
+//			foundMember.getAddressesHistory().add(new AddressEntity("newCity1", "newStreet1", "33333"));
 
 			tx.commit();
 		}catch (Exception e){
@@ -36,7 +62,7 @@ public class Ex1HelloJpaApplication {
 
 	}
 
-	private static void valueTypeCollectionTest(EntityManager em) {
+	private static void valueTypeCollectionTest1(EntityManager em) {
 		Address address1 = new Address("Seoul", "Gangnam", "11111");
 		Address address2 = new Address("Busan", "Seomyun", "22222");
 
@@ -46,7 +72,7 @@ public class Ex1HelloJpaApplication {
 
 		Member member2 = new Member();
 		member2.setUsername("user2");
-		member2.setAddressesHistory(new ArrayList<>(Arrays.asList(address1, address2)));
+//		member2.setAddressesHistory(new ArrayList<>(Arrays.asList(address1, address2)));
 		em.persist(member2);
 	}
 

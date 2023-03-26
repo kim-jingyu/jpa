@@ -17,6 +17,7 @@
         <class>jpabasic.ex1.domain.Member</class>
         <class>jpabasic.ex1.domain.Address</class>
         <class>jpabasic.ex1.domain.Period</class>
+        <class>jpabasic.ex1.domain.AddressEntity</class>
         <properties>
             <!-- 필수 속성 -->
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>

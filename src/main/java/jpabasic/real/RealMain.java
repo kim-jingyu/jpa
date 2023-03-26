@@ -26,11 +26,9 @@ public class RealMain {
         try {
             Member member1 = new Member();
             member1.setName("member1");
-            member1.setCity("seoul");
             em.persist(member1);
 
             Delivery delivery = new Delivery();
-            delivery.setCity("seoul");
             delivery.setStatus(DeliveryStatus.COMPLETE);
             em.persist(delivery);
 

@@ -1,4 +1,4 @@
-package jpabasic.jpql;
+package jpabasic.jpql.domain;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

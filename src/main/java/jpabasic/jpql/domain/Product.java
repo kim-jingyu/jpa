@@ -1,9 +1,10 @@
-package jpabasic.jpql;
+package jpabasic.jpql.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jpabasic.jpql.domain.Orders;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,15 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter
-public class Team {
+@Getter
+@Setter
+public class Product {
     @Id
     @GeneratedValue
     private Long id;
     private String name;
-    @OneToMany(mappedBy = "team")
-    private List<Member> members = new ArrayList<>();
+    private int price;
+    private int stockAmount;
+    @OneToMany(mappedBy = "product")
+    private List<Orders> orders = new ArrayList<>();
 
-    public Team() {
+    public Product() {
     }
 }

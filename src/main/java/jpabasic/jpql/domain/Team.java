@@ -23,4 +23,12 @@ public class Team {
 
     public Team() {
     }
+
+    @Override
+    public String toString() {
+        return "Team{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

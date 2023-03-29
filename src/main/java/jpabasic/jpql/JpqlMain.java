@@ -34,6 +34,16 @@ public class JpqlMain {
         emf.close();
     }
 
+    private static void joinTest(EntityManager em) {
+        String query = "select m from Member m right join m.team t on t.name = 'teamA'";
+        List<Member> resultList = em.createQuery(query, Member.class)
+                .getResultList();
+
+        for (Member member : resultList) {
+            System.out.println("member = " + member);
+        }
+    }
+
     private static void pagingTest(EntityManager em) {
         List<Member> resultList = em.createQuery("select m from Member m order by m.age desc", Member.class)
                 .setFirstResult(0)
@@ -95,7 +105,6 @@ public class JpqlMain {
         Member member2 = new Member();
         member2.setUsername("member2");
         member2.setAge(15);
-        member2.changeTeam(teamA);
         em.persist(member2);
 
         Address address = new Address();

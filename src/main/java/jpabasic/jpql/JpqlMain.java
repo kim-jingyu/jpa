@@ -25,7 +25,6 @@ public class JpqlMain {
             persistenceContextInit(em);
 
 
-
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -33,6 +32,27 @@ public class JpqlMain {
             em.close();
         }
         emf.close();
+    }
+
+    private static void pagingTest(EntityManager em) {
+        List<Member> resultList = em.createQuery("select m from Member m order by m.age desc", Member.class)
+                .setFirstResult(0)
+                .setMaxResults(10)
+                .getResultList();
+
+        System.out.println("resultList.size() = " + resultList.size());
+        for (Member member : resultList) {
+            System.out.println("member = " + member);
+        }
+    }
+
+    private static void forPagingTestInit(EntityManager em) {
+        for (int i = 0; i < 100; i++) {
+            Member member = new Member();
+            member.setUsername("member" + i);
+            member.setAge(i);
+            em.persist(member);
+        }
     }
 
     private static void scalaTypeProjection2(EntityManager em) {

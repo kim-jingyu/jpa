@@ -22,8 +22,8 @@ public class JpqlMain {
         try {
             init(em);
 
-            em.flush();
-            em.clear();
+            persistenceContextInit(em);
+
 
 
             tx.commit();
@@ -33,6 +33,11 @@ public class JpqlMain {
             em.close();
         }
         emf.close();
+    }
+
+    private static void persistenceContextInit(EntityManager em) {
+        em.flush();
+        em.clear();
     }
 
     private static void scalaTypeProjection(EntityManager em) {

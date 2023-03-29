@@ -35,6 +35,16 @@ public class JpqlMain {
         emf.close();
     }
 
+    private static void scalaTypeProjection2(EntityManager em) {
+        List<MemberDTO> resultList = em.createQuery("select new jpabasic.jpql.domain.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
+                .getResultList();
+
+        for (MemberDTO memberDTO : resultList) {
+            System.out.println("memberDTO.getUsername() = " + memberDTO.getUsername());
+            System.out.println("memberDTO.getAge() = " + memberDTO.getAge());
+        }
+    }
+
     private static void persistenceContextInit(EntityManager em) {
         em.flush();
         em.clear();

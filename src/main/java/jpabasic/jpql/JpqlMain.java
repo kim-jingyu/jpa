@@ -24,7 +24,6 @@ public class JpqlMain {
 
             persistenceContextInit(em);
 
-
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -32,6 +31,28 @@ public class JpqlMain {
             em.close();
         }
         emf.close();
+    }
+
+    private static void subQueryTest2(EntityManager em) {
+        // 한 건이라도 주문한 고객
+        String query = "select m from Member m where (select count(o) from Orders o where m = o.member) > 0";
+        List<Member> resultList = em.createQuery(query, Member.class)
+                .getResultList();
+
+        for (Member member : resultList) {
+            System.out.println("member = " + member);
+        }
+    }
+
+    private static void subQueryTest1(EntityManager em) {
+        // 나이가 평균보다 많은 회원 찾기
+        String query = "select m from Member m where m.age > (select avg(m2.age) from Member m2)";
+        List<Member> resultList = em.createQuery(query, Member.class)
+                .getResultList();
+
+        for (Member member : resultList) {
+            System.out.println("member = " + member);
+        }
     }
 
     private static void joinTest(EntityManager em) {

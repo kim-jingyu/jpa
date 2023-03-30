@@ -22,7 +22,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Orders> orders = new ArrayList<>();
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private MemberType memberType;
 
     public void changeTeam(Team team) {

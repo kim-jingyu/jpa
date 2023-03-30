@@ -8,8 +8,11 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import jpabasic.jpql.domain.*;
+import jpabasic.real.domain.item.Item;
 
 import java.util.List;
+
+import static jpabasic.jpql.domain.MemberType.*;
 
 public class JpqlMain {
     public static void main(String[] args) {
@@ -24,6 +27,8 @@ public class JpqlMain {
 
             persistenceContextInit(em);
 
+
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -31,6 +36,29 @@ public class JpqlMain {
             em.close();
         }
         emf.close();
+    }
+
+    private static void typePresentTest(EntityManager em) {
+        // JPQL 타입 표현
+        String query = "select m.username, 'HELLO', true from Member m where m.memberType = :userType";
+        List<Object[]> resultList = em.createQuery(query)
+                .setParameter("userType", ADMIN)
+                .getResultList();
+
+        for (Object[] objects : resultList) {
+            System.out.println("objects[0] = " + objects[0]);
+            System.out.println("objects[1] = " + objects[1]);
+            System.out.println("objects[2] = " + objects[2]);
+        }
+
+        // 엔티티 타입 표현 ( 상속 관계에서 사용 )
+        String query2 = "select i from Item i where type(i) = Book";
+        List<Item> resultList1 = em.createQuery(query2, Item.class)
+                .getResultList();
+
+        for (Item item : resultList1) {
+            System.out.println("item = " + item);
+        }
     }
 
     private static void subQueryTest3(EntityManager em) {
@@ -61,9 +89,19 @@ public class JpqlMain {
             System.out.println("member = " + member);
         }
 
-        String query4 = "select (select avg(m1.age) From Member m1) as avgAge from Member m join Team t on m.username = 'member1'";
+        String query4 = "select (select avg(m1.age) From Member m1) as avgAge from Member m";
+        List<Object[]> resultList3 = em.createQuery(query4).getResultList();
+
+        for (Object[] objects : resultList3) {
+            System.out.println("objects[0] = " + objects[0]);
+        }
 
         String query5 = "select mm.age, mm.username from (select m.age, m.username from Member m) as mm";
+        List<Object[]> resultList4 = em.createQuery(query5).getResultList();
+
+        for (Object[] objects : resultList4) {
+            System.out.println("objects[0] = " + objects[0]);
+        }
     }
 
     private static void subQueryTest2(EntityManager em) {
@@ -159,6 +197,7 @@ public class JpqlMain {
         Member member2 = new Member();
         member2.setUsername("member2");
         member2.setAge(15);
+        member2.setMemberType(ADMIN);
         em.persist(member2);
 
         Address address = new Address();

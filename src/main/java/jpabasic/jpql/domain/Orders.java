@@ -24,4 +24,13 @@ public class Orders {
     public Orders() {
 
     }
+
+    @Override
+    public String toString() {
+        return "Orders{" +
+                "id=" + id +
+                ", orderAmount=" + orderAmount +
+                ", address=" + address +
+                '}';
+    }
 }

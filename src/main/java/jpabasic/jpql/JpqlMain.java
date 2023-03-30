@@ -33,6 +33,39 @@ public class JpqlMain {
         emf.close();
     }
 
+    private static void subQueryTest3(EntityManager em) {
+        // 팀 A 소속인 회원. exists (subquery)
+        String query1 = "select m from Member m where exists (select t from m.team t where t.name = 'teamA')";
+        List<Member> resultList1 = em.createQuery(query1, Member.class)
+                .getResultList();
+
+        for (Member member : resultList1) {
+            System.out.println("member = " + member);
+        }
+
+        // 전체 상품 각 재고보다 주문량이 많은 주문들. ALL 모두 만족하면 참
+        String query2 = "select o from Orders o where o.orderAmount > ALL (select p.stockAmount from Product p)";
+        List<Orders> resultList2 = em.createQuery(query2, Orders.class)
+                .getResultList();
+
+        for (Orders orders : resultList2) {
+            System.out.println("orders = " + orders);
+        }
+
+        // 어떤 팀이든 팀에 소속된 회원. ANY, SOME 조건을 하나라도 만족하면 참
+        String query3 = "select m from Member m where m.team = ANY (select t from Team t)";
+        List<Member> resultList = em.createQuery(query3, Member.class)
+                .getResultList();
+
+        for (Member member : resultList) {
+            System.out.println("member = " + member);
+        }
+
+        String query4 = "select (select avg(m1.age) From Member m1) as avgAge from Member m join Team t on m.username = 'member1'";
+
+        String query5 = "select mm.age, mm.username from (select m.age, m.username from Member m) as mm";
+    }
+
     private static void subQueryTest2(EntityManager em) {
         // 한 건이라도 주문한 고객
         String query = "select m from Member m where (select count(o) from Orders o where m = o.member) > 0";
@@ -140,7 +173,7 @@ public class JpqlMain {
         em.persist(product);
 
         Orders orders = new Orders();
-        orders.setOrderAmount(1);
+        orders.setOrderAmount(101);
         orders.setAddress(address);
         orders.setMember(member1);
         orders.setProduct(product);

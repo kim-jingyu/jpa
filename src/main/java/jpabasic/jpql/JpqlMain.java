@@ -28,7 +28,6 @@ public class JpqlMain {
             persistenceContextInit(em);
 
 
-
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -36,6 +35,21 @@ public class JpqlMain {
             em.close();
         }
         emf.close();
+    }
+
+    private static void fetchJoinTest(EntityManager em) {
+        String query = "select t from Team t";
+        List<Team> teams = em.createQuery(query, Team.class)
+                .setFirstResult(0)
+                .setMaxResults(4)
+                .getResultList();
+
+        for (Team team : teams) {
+            System.out.println("team.getName() = " + team.getName() + ", team = " + team);
+            for (Member member: team.getMembers()) {
+                System.out.println("member.getUsername() = " + member.getUsername() + ", member = " + member);
+            }
+        }
     }
 
     private static void jpqlBasicFunction(EntityManager em) {
@@ -252,8 +266,24 @@ public class JpqlMain {
         teamA.setName("teamA");
         em.persist(teamA);
 
+        Team teamB = new Team();
+        teamB.setName("teamB");
+        em.persist(teamB);
+
+        Team teamC = new Team();
+        teamC.setName("teamC");
+        em.persist(teamC);
+
+        Team teamD = new Team();
+        teamD.setName("teamD");
+        em.persist(teamD);
+
+        Team teamE = new Team();
+        teamE.setName("teamE");
+        em.persist(teamE);
+
         Member member1 = new Member();
-        member1.setUsername("   관리자   ");
+        member1.setUsername("관리자");
         member1.setAge(20);
         member1.changeTeam(teamA);
         em.persist(member1);
@@ -262,6 +292,7 @@ public class JpqlMain {
         member2.setUsername("member2");
         member2.setAge(15);
         member2.setMemberType(ADMIN);
+        member2.setTeam(teamA);
         em.persist(member2);
 
         Address address = new Address();

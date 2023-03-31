@@ -27,7 +27,13 @@ public class JpqlMain {
 
             persistenceContextInit(em);
 
+            String query = "select p from Product p where type(p) in (Cellphone,Tv)";
+            List<Product> resultList = em.createQuery(query, Product.class)
+                    .getResultList();
 
+            for (Product product : resultList) {
+                System.out.println("product = " + product);
+            }
 
             tx.commit();
         } catch (Exception e) {
@@ -283,6 +289,23 @@ public class JpqlMain {
         teamE.setName("teamE");
         em.persist(teamE);
 
+        Cellphone cellphone = new Cellphone();
+        cellphone.setName("iPhone");
+        cellphone.setBrandName("Apple");
+        cellphone.setModel("14 pro-max");
+        em.persist(cellphone);
+
+        Tv tv = new Tv();
+        tv.setName("Neo");
+        tv.setBrandName("Samsung");
+        tv.setSize("100-inch");
+        em.persist(tv);
+
+        Car car = new Car();
+        car.setBrandName("Hyundai");
+        car.setName("Genesis");
+        em.persist(car);
+
         Member member1 = new Member();
         member1.setUsername("관리자");
         member1.setAge(20);
@@ -301,17 +324,11 @@ public class JpqlMain {
         address.setStreet("Gangnam");
         address.setZipcode("11111");
 
-        Product product = new Product();
-        product.setName("사과");
-        product.setPrice(1000);
-        product.setStockAmount(100);
-        em.persist(product);
-
         Orders orders = new Orders();
         orders.setOrderAmount(101);
         orders.setAddress(address);
         orders.setMember(member1);
-        orders.setProduct(product);
+        orders.setProduct(tv);
         em.persist(orders);
     }
 

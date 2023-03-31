@@ -16,7 +16,10 @@ public class Category {
     private String name;
 
     @ManyToMany(mappedBy = "categories")
-    @JoinTable(name = "CATEGORY_ITEM")
+    @JoinTable(name = "CATEGORY_ITEM",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "item_id")
+    )
     private List<Item> items;
 
     @ManyToOne(fetch = FetchType.LAZY)

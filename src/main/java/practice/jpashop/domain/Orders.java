@@ -28,4 +28,7 @@ public class Orders {
 
     private LocalDateTime orderDate;
     private OrderStatus status;
+
+    public Orders() {
+    }
 }

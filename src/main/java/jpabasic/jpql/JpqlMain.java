@@ -28,6 +28,7 @@ public class JpqlMain {
             persistenceContextInit(em);
 
 
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();

@@ -60,10 +60,13 @@ public class RealMain {
             member1.getOrders().add(order1);
             order1.getOrderItems().add(orderItem);
 
-            Member foundMember = em.find(Member.class, member1.getId());
-            log.info("오더 개수 = {}", foundMember.getOrders().size());
-            Order foundOrder = em.find(Order.class, order1.getId());
-            log.info("오더 아이템 개수 = {}", foundOrder.getOrderItems().size());
+            String query = "select i from Item i where type(i) in (Album, Movie)";
+            List<Item> resultList = em.createQuery(query, Item.class)
+                    .getResultList();
+
+            for (Item item : resultList) {
+                System.out.println("item = " + item);
+            }
 
             tx.commit();
         } catch (Exception e) {
@@ -73,6 +76,13 @@ public class RealMain {
             em.close();
         }
         emf.close();
+    }
+
+    private static void findTest(EntityManager em, Member member1, Order order1) {
+        Member foundMember = em.find(Member.class, member1.getId());
+        log.info("오더 개수 = {}", foundMember.getOrders().size());
+        Order foundOrder = em.find(Order.class, order1.getId());
+        log.info("오더 아이템 개수 = {}", foundOrder.getOrderItems().size());
     }
 
     private static List<Item> getItem(Item itemA) {

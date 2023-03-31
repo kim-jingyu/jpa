@@ -27,6 +27,14 @@ public class JpqlMain {
 
             persistenceContextInit(em);
 
+            // 재고가 10개 미만인 제품의 가격을 10% 인상한다.
+            String query = "update Product p set p.price = p.price * 1.1 where p.stockAmount < :stock";
+
+            int result = em.createQuery(query)
+                    .setParameter("stock", 10)
+                    .executeUpdate();
+
+            System.out.println("result = " + result);
 
             tx.commit();
         } catch (Exception e) {
@@ -316,17 +324,23 @@ public class JpqlMain {
         cellphone.setName("iPhone");
         cellphone.setBrandName("Apple");
         cellphone.setModel("14 pro-max");
+        cellphone.setPrice(10000);
+        cellphone.setStockAmount(15);
         em.persist(cellphone);
 
         Tv tv = new Tv();
         tv.setName("Neo");
         tv.setBrandName("Samsung");
         tv.setSize("100-inch");
+        tv.setPrice(8000);
+        tv.setStockAmount(8);
         em.persist(tv);
 
         Car car = new Car();
         car.setBrandName("Hyundai");
         car.setName("Genesis");
+        car.setPrice(9000);
+        car.setStockAmount(6);
         em.persist(car);
 
         Member member1 = new Member();

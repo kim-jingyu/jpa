@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQuery(name = "Member.findByUsername",
+            query = "select m from Member m where m.username = :username"
+)
 @Getter @Setter
 public class Member {
     @Id

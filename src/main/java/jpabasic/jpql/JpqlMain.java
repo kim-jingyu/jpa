@@ -27,6 +27,7 @@ public class JpqlMain {
 
             persistenceContextInit(em);
 
+
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -34,6 +35,16 @@ public class JpqlMain {
             em.close();
         }
         emf.close();
+    }
+
+    private static void namedQueryTest(EntityManager em) {
+        List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
+                .setParameter("username", "member1")
+                .getResultList();
+
+        for (Member member : resultList) {
+            System.out.println("member = " + member);
+        }
     }
 
     private static void treatPractice(EntityManager em) {

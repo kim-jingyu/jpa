@@ -16,6 +16,7 @@ public class Delivery {
     @Embedded
     private Address address;
 
+    @Enumerated(value = EnumType.STRING)
     private DeliveryStatus status;
 
     public Delivery() {

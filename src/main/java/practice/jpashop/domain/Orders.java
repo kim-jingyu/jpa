@@ -27,6 +27,8 @@ public class Orders {
     private List<OrderItem> orderItems;
 
     private LocalDateTime orderDate;
+
+    @Enumerated(value = EnumType.STRING)
     private OrderStatus status;
 
     public Orders() {

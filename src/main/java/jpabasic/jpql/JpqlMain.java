@@ -27,14 +27,6 @@ public class JpqlMain {
 
             persistenceContextInit(em);
 
-            String query = "select p from Product p where type(p) in (Cellphone,Tv)";
-            List<Product> resultList = em.createQuery(query, Product.class)
-                    .getResultList();
-
-            for (Product product : resultList) {
-                System.out.println("product = " + product);
-            }
-
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -42,6 +34,26 @@ public class JpqlMain {
             em.close();
         }
         emf.close();
+    }
+
+    private static void treatPractice(EntityManager em) {
+        String query = "select p from Product p where treat(p as Car).brandName = 'Hyundai'";
+        List<Product> resultList = em.createQuery(query, Product.class)
+                .getResultList();
+
+        for (Product product : resultList) {
+            System.out.println("product = " + product);
+        }
+    }
+
+    private static void typePractice(EntityManager em) {
+        String query = "select p from Product p where type(p) in (Cellphone,Tv)";
+        List<Product> resultList = em.createQuery(query, Product.class)
+                .getResultList();
+
+        for (Product product : resultList) {
+            System.out.println("product = " + product);
+        }
     }
 
     private static void fetchJoinTest(EntityManager em) {

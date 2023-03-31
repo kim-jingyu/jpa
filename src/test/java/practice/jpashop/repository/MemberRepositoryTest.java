@@ -18,6 +18,10 @@ class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
+    /**
+     * Entity, Repository 동작 확인
+     * jar 빌드해서 동작 확인
+     */
     @Test
     @Transactional
     @Rollback(value = false)

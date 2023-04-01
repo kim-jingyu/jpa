@@ -16,8 +16,8 @@ public class Category {
 
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
-    @JoinTable(name = "CATEGORY_ITEM",
+    @ManyToMany
+    @JoinTable(name = "category_item",
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id")
     )

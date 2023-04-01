@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,7 +22,7 @@ public class Member {
     private Address address;
 
     @OneToMany(mappedBy = "member")
-    private List<Orders> orders;
+    private List<Orders> orders = new ArrayList<>();
 
     public Member() {
     }

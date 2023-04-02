@@ -29,4 +29,16 @@ public class ItemService {
     public Item findById(Long itemId) {
         return itemRepository.findById(itemId);
     }
+
+    /**
+     * 영속성 컨텍스트가 자동 변경하게 한다. (변경 감지)
+     * 식별자와 변경할 데이터를 명확하게 전달한다. (파라미터 or dto)
+     */
+    @Transactional
+    public void updateItem(Long id, String name, int price, int stockQuantity) {
+        Item item = itemRepository.findById(id);
+        item.setName(name);
+        item.setPrice(price);
+        item.setStockQuantity(stockQuantity);
+    }
 }

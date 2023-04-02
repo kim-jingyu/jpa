@@ -11,6 +11,8 @@ import practice.jpashop.domain.Address;
 import practice.jpashop.domain.Member;
 import practice.jpashop.service.MemberService;
 
+import java.util.List;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -42,4 +44,14 @@ public class MemberController {
 
         return "redirect:/";
     }
+
+    // 회원 목록 폼
+    @GetMapping(value = "/members")
+    public String list(Model model) {
+        List<Member> members = memberService.findMembers();
+        model.addAttribute("members", members);
+        return "members/memberList";
+    }
+
+
 }

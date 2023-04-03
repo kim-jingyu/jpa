@@ -3,11 +3,14 @@ package practice.jpashop.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter @Setter
+@Slf4j
 public class OrderItem {
-    @Id @GeneratedValue
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_item_id")
     private Long id;
 
@@ -25,6 +28,17 @@ public class OrderItem {
     public OrderItem() {
     }
 
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "id=" + id +
+                ", order=" + order +
+                ", item=" + item +
+                ", orderPrice=" + orderPrice +
+                ", count=" + count +
+                '}';
+    }
+
     // 생성 메서드
 
     /**
@@ -35,6 +49,9 @@ public class OrderItem {
      * @return 주문상품 엔티티
      */
     public static OrderItem createOrderItem(Item item, int orderPrice, int count) {
+        log.info("createOrderItem 진입");
+        log.info("파라미터 정보 item = {}, price = {}, count = {}", item, orderPrice, count);
+
         OrderItem orderItem = new OrderItem();
         orderItem.setItem(item);
         orderItem.setOrderPrice(orderPrice);

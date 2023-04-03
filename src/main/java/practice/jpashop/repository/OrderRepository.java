@@ -22,6 +22,7 @@ public class OrderRepository {
      * @param order
      */
     public void save(Orders order) {
+        em.persist(order.getOrderItems().get(0));
         em.persist(order);
     }
 
@@ -63,7 +64,7 @@ public class OrderRepository {
             } else {
                 jpql += " and";
             }
-            jpql += " m.name like :name";
+            jpql += " m.username like :name";
         }
 
         TypedQuery<Orders> query = em.createQuery(jpql, Orders.class)

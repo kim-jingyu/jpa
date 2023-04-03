@@ -1,6 +1,7 @@
 package practice.jpashop.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import practice.jpashop.domain.*;
@@ -8,9 +9,12 @@ import practice.jpashop.repository.ItemRepository;
 import practice.jpashop.repository.MemberRepository;
 import practice.jpashop.repository.OrderRepository;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
@@ -31,9 +35,9 @@ public class OrderService {
 
         // 주문상품 생성
         OrderItem orderItem = OrderItem.createOrderItem(item, item.getPrice(), count);
-
         // 주문 생성
         Orders order = Orders.createOrder(member, delivery, orderItem);
+        log.info("order 정보 = {}", order.getOrderItems());
 
         // 주문 저장
         orderRepository.save(order);
@@ -52,4 +56,7 @@ public class OrderService {
     }
 
     // 주문 검색
+    public List<Orders> findOrders(OrderSearch orderSearch) {
+        return orderRepository.findAllByCriteria(orderSearch);
+    }
 }

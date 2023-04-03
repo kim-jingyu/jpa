@@ -57,6 +57,6 @@ public class OrderService {
 
     // 주문 검색
     public List<Orders> findOrders(OrderSearch orderSearch) {
-        return orderRepository.findAllByCriteria(orderSearch);
+        return orderRepository.findAll(orderSearch);
     }
 }

@@ -22,7 +22,6 @@ public class OrderRepository {
      * @param order
      */
     public void save(Orders order) {
-        em.persist(order.getOrderItems().get(0));
         em.persist(order);
     }
 

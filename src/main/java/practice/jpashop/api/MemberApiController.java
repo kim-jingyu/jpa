@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import practice.jpashop.domain.Member;
 import practice.jpashop.service.MemberService;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequiredArgsConstructor
 public class MemberApiController {
@@ -33,6 +36,22 @@ public class MemberApiController {
         return new UpdateMemberResponse(member.getId(), member.getUsername());
     }
 
+    @GetMapping("/api/v1/members")
+    public List<Member> listV1() {
+        return memberService.findMembers();
+    }
+
+    @GetMapping("/api/v2/members")
+    public Result listV2() {
+        List<Member> members = memberService.findMembers();
+
+        List<MemberDto> dtos = members.stream()
+                .map(member -> new MemberDto(member.getUsername()))
+                .toList();
+
+        return new Result(dtos.size(),dtos);
+    }
+
     @Data
     static class CreateMemberRequest {
         private String username;
@@ -56,6 +75,19 @@ public class MemberApiController {
     @AllArgsConstructor
     static class UpdateMemberResponse{
         private Long id;
+        private String username;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private int count;
+        private T data;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class MemberDto {
         private String username;
     }
 }

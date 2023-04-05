@@ -10,6 +10,8 @@ import practice.jpashop.domain.OrderSearch;
 import practice.jpashop.domain.OrderStatus;
 import practice.jpashop.domain.Orders;
 import practice.jpashop.repository.OrderRepository;
+import practice.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
+import practice.jpashop.repository.order.simplequery.OrderSimpleQueryRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderSimpleApiController {
     private final OrderRepository orderRepository;
-
+    private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
     /**
      * 엔티티 직접 노출
@@ -62,6 +64,11 @@ public class OrderSimpleApiController {
                 .toList();
 
         return new Result(dtos);
+    }
+
+    @GetMapping("/api/v4/simple-orders")
+    public Result ordersListV4() {
+        return new Result(orderSimpleQueryRepository.findOrderDtos());
     }
 
     @Data

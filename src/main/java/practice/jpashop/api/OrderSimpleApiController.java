@@ -5,10 +5,13 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import practice.jpashop.domain.Address;
 import practice.jpashop.domain.OrderSearch;
+import practice.jpashop.domain.OrderStatus;
 import practice.jpashop.domain.Orders;
 import practice.jpashop.repository.OrderRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -39,9 +42,48 @@ public class OrderSimpleApiController {
         return new Result(orderList);
     }
 
+    @GetMapping("/api/v2/simple-orders")
+    public Result ordersListV2() {
+        List<Orders> ordersList = orderRepository.findAll(new OrderSearch());
+
+        List<SimpleOrderDto> dtos = ordersList.stream()
+                .map(SimpleOrderDto::new)
+                .toList();
+
+        return new Result(ordersList);
+    }
+
+    @GetMapping("/api/v3/simple-orders")
+    public Result ordersListV3() {
+        List<Orders> ordersList = orderRepository.findAllWithMemberDelivery();
+
+        List<SimpleOrderDto> dtos = ordersList.stream()
+                .map(SimpleOrderDto::new)
+                .toList();
+
+        return new Result(dtos);
+    }
+
     @Data
     @AllArgsConstructor
     static class Result<T> {
         private T data;
+    }
+
+    @Data
+    static class SimpleOrderDto {
+        private Long orderId;
+        private String userName;
+        private LocalDateTime orderDate;    // 주문시간
+        private OrderStatus orderStatus;
+        private Address deliveryAddress;
+
+        public SimpleOrderDto(Orders o) {
+            orderId = o.getId();
+            userName = o.getMember().getUsername();
+            orderDate = o.getOrderDate();
+            orderStatus = o.getStatus();
+            deliveryAddress = o.getDelivery().getAddress();
+        }
     }
 }

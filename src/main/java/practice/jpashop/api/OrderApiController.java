@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import practice.jpashop.domain.*;
 import practice.jpashop.repository.OrderRepository;
@@ -11,6 +12,9 @@ import practice.jpashop.repository.OrderRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * 컬렉션 조회 최적화
+ */
 @RestController
 @RequiredArgsConstructor
 public class OrderApiController {
@@ -43,6 +47,13 @@ public class OrderApiController {
         List<Orders> ordersList = orderRepository.findAllWithOrderItem();
         List<OrderDto> orderDtos = ordersList.stream().map(OrderDto::new).toList();
         return new Result(orderDtos);
+    }
+
+    @GetMapping("/api/v3.1/orders")
+    public Result ordersListV3_paging(@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "100") int limit) {
+        List<Orders> ordersList = orderRepository.findAllWithPaging(offset, limit);
+        List<OrderDto> dtos = ordersList.stream().map(OrderDto::new).toList();
+        return new Result(dtos);
     }
 
     @Data

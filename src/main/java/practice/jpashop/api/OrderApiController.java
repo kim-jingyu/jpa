@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import practice.jpashop.domain.*;
 import practice.jpashop.repository.OrderRepository;
+import practice.jpashop.repository.order.query.OrderQueryDto;
+import practice.jpashop.repository.order.query.OrderQueryRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderApiController {
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     @GetMapping("/api/v1/orders")
     public List<Orders> ordersListV1() {
@@ -54,6 +57,11 @@ public class OrderApiController {
         List<Orders> ordersList = orderRepository.findAllWithPaging(offset, limit);
         List<OrderDto> dtos = ordersList.stream().map(OrderDto::new).toList();
         return new Result(dtos);
+    }
+
+    @GetMapping("/api/v4/orders")
+    public Result ordersListV4() {
+        return new Result(orderQueryRepository.getOrderQueryDtos());
     }
 
     @Data

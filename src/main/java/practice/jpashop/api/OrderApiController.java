@@ -8,11 +8,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import practice.jpashop.domain.*;
 import practice.jpashop.repository.OrderRepository;
+import practice.jpashop.repository.order.query.OrderFlatDto;
+import practice.jpashop.repository.order.query.OrderItemQueryDto;
 import practice.jpashop.repository.order.query.OrderQueryDto;
 import practice.jpashop.repository.order.query.OrderQueryRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 컬렉션 조회 최적화
@@ -67,6 +70,33 @@ public class OrderApiController {
     @GetMapping("/api/v5/orders")
     public Result ordersListV5() {
         return new Result(orderQueryRepository.getOrderQueryDtos_optimization());
+    }
+
+    @GetMapping("/api/v6/orders")
+    public Result ordersListV6() {
+//        return new Result(orderQueryRepository.findAllByDto_flat());
+        List<OrderFlatDto> flatDtos = orderQueryRepository.findAllByDto_flat();
+//        return new Result(flatDtos);
+//        OrderQueryDto
+//        private Long orderId;
+//        private String username;
+//        private LocalDateTime orderDate;
+//        private OrderStatus orderStatus;
+//        private Address deliveryAddress;
+//        private List<OrderItemQueryDto> orderItems;
+
+//        OrderItemQueryDto
+//        private Long orderId;       // 주문번호
+//        private String itemName;    // 상품명
+//        private int orderPrice;     // 주문가격
+//        private int count;          // 주문수량
+
+        return new Result(flatDtos.stream()
+                .collect(Collectors.groupingBy(o -> new OrderQueryDto(o.getOrderId(), o.getUsername(), o.getOrderDate(), o.getOrderStatus(), o.getDeliveryAddress()),
+                        Collectors.mapping(o -> new OrderItemQueryDto(o.getOrderId(), o.getItemName(), o.getOrderPrice(), o.getCount()), Collectors.toList())
+                )).entrySet().stream()
+                .map(e -> new OrderQueryDto(e.getKey().getOrderId(), e.getKey().getUsername(), e.getKey().getOrderDate(), e.getKey().getOrderStatus(), e.getKey().getDeliveryAddress(), e.getValue()))
+                .toList());
     }
 
     @Data

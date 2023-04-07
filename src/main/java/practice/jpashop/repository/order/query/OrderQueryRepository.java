@@ -3,7 +3,10 @@ package practice.jpashop.repository.order.query;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import practice.jpashop.domain.Address;
+import practice.jpashop.domain.OrderStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -90,5 +93,26 @@ public class OrderQueryRepository {
         return result.stream()
                 .map(OrderQueryDto::getOrderId)
                 .toList();
+    }
+
+//    OrderFlatDto
+//    private Long orderId;
+//    private String username;
+//    private LocalDateTime orderDate;
+//    private Address deliveryAddress;
+//    private OrderStatus orderStatus;
+//
+//    private String itemName;
+//    private int orderPrice;
+//    private int count;
+    public List<OrderFlatDto> findAllByDto_flat() {
+        return em.createQuery(
+                        "select new practice.jpashop.repository.order.query.OrderFlatDto(o.id, m.username, o.orderDate, d.address, o.status, i.name, oi.orderPrice, oi.count)" +
+                                " from Orders o" +
+                                " join o.member m" +
+                                " join o.delivery d" +
+                                " join o.orderItems oi" +
+                                " join oi.item i", OrderFlatDto.class)
+                .getResultList();
     }
 }

@@ -53,4 +53,15 @@ public class MemberJpaRepository {
                 .setParameter("age", age)
                 .getResultList();
     }
+
+    /**
+     * JPA를 직접 사용해서 Named 쿼리 호출
+     * @param username
+     * @return List<Member>
+     */
+    public List<Member> findByUsername(String username) {
+        return em.createQuery("Member.findByUsername", Member.class)
+                .setParameter("username", username)
+                .getResultList();
+    }
 }

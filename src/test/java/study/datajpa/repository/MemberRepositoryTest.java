@@ -95,4 +95,17 @@ class MemberRepositoryTest {
 
         assertThat(result.size()).isEqualTo(2);
     }
+
+    @Test
+    @DisplayName("@Query, 리포지토리 메서드에 쿼리 정의하기")
+    void 리포지토리_메서드에_쿼리_정의하기() {
+        Member userA = new Member("userA", 10);
+        Member userB = new Member("userB", 20);
+        memberRepository.save(userA);
+        memberRepository.save(userB);
+
+        List<Member> result = memberRepository.findUser("userA", 10);
+
+        assertThat(result.get(0)).isEqualTo(userA);
+    }
 }

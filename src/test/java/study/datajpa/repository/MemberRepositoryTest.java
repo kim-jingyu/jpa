@@ -1,6 +1,7 @@
 package study.datajpa.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.entity.Member;
+import study.datajpa.entity.Team;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,8 @@ import static org.assertj.core.api.Assertions.*;
 class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     void testMember() {
@@ -107,5 +111,40 @@ class MemberRepositoryTest {
         List<Member> result = memberRepository.findUser("userA", 10);
 
         assertThat(result.get(0)).isEqualTo(userA);
+    }
+
+    @Test
+    @DisplayName("@Query, 단순 값 하나 조회")
+    void 단순_값_하나_조회() {
+        Member userA = new Member("userA", 10);
+        Member userB = new Member("userB", 20);
+        memberRepository.save(userA);
+        memberRepository.save(userB);
+
+        List<String> usernameList = memberRepository.findUsernameList();
+
+        for (String username : usernameList) {
+            System.out.println("username = " + username);
+        }
+    }
+
+    @Test
+    @DisplayName("@Query, DTO 조회하기")
+    void DTO_조회하기() {
+        Team team = new Team("team1");
+        teamRepository.save(team);
+
+        Member userA = new Member("userA", 10);
+        Member userB = new Member("userB", 20);
+        userA.changeTeam(team);
+        userB.changeTeam(team);
+        memberRepository.save(userA);
+        memberRepository.save(userB);
+
+        List<MemberDto> dtoList = memberRepository.findMemberDto();
+
+        for (MemberDto memberDto : dtoList) {
+            System.out.println("memberDto = " + memberDto);
+        }
     }
 }

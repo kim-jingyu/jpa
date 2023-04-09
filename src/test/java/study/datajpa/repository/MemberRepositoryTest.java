@@ -1,7 +1,6 @@
 package study.datajpa.repository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback(value = false)
 @Slf4j
 class MemberRepositoryTest {
     @Autowired
@@ -68,5 +66,33 @@ class MemberRepositoryTest {
 
         long deletedCount = memberRepository.count();
         assertThat(deletedCount).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("같은 이름의 회원 중 나이가 설정한 값 이상인 회원 조회 테스트")
+    void findByUsernameAndAgeGreaterThan() {
+        Member user1 = new Member("userA", 10);
+        Member user2 = new Member("userA", 20);
+        memberRepository.save(user1);
+        memberRepository.save(user2);
+
+        List<Member> result = memberRepository.findByUsernameAndAgeGreaterThan("userA", 15);
+
+        assertThat(result.get(0).getUsername()).isEqualTo("userA");
+        assertThat(result.get(0).getAge()).isEqualTo(20);
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("이름 부분 검색 테스트")
+    void findHelloByUsernameLikeAndAgeNotNull() {
+        Member userA = new Member("userA", 10);
+        Member userB = new Member("userB");
+        memberRepository.save(userA);
+        memberRepository.save(userB);
+
+        List<Member> result = memberRepository.findHelloByUsernameContaining("user");
+
+        assertThat(result.size()).isEqualTo(2);
     }
 }

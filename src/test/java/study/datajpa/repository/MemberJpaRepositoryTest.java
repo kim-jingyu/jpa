@@ -1,6 +1,5 @@
 package study.datajpa.repository;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +11,9 @@ import study.datajpa.entity.Member;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback(value = false)
 class MemberJpaRepositoryTest {
 
     @Autowired
@@ -63,4 +60,18 @@ class MemberJpaRepositoryTest {
         assertThat(deletedCount).isEqualTo(0);
     }
 
+    @Test
+    @DisplayName("같은 이름의 회원 중 나이가 설정한 값 이상인 회원 조회 테스트")
+    void findByUsernameAndAgeGreaterThan() {
+        Member user1 = new Member("userA", 10);
+        Member user2 = new Member("userA", 20);
+        jpaRepository.save(user1);
+        jpaRepository.save(user2);
+
+        List<Member> result = jpaRepository.findByUsernameAndAgeGreaterThan("userA", 15);
+
+        assertThat(result.get(0).getUsername()).isEqualTo("userA");
+        assertThat(result.get(0).getAge()).isEqualTo(20);
+        assertThat(result.size()).isEqualTo(1);
+    }
 }

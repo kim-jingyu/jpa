@@ -74,4 +74,24 @@ class MemberJpaRepositoryTest {
         assertThat(result.get(0).getAge()).isEqualTo(20);
         assertThat(result.size()).isEqualTo(1);
     }
+
+    @Test
+    @DisplayName("JPA 페이징 테스트")
+    void JPA_페이징_테스트() {
+        jpaRepository.save(new Member("member1", 10));
+        jpaRepository.save(new Member("member2", 10));
+        jpaRepository.save(new Member("member3", 10));
+        jpaRepository.save(new Member("member4", 10));
+        jpaRepository.save(new Member("member5", 10));
+
+        int age = 10;
+        int offset = 0;
+        int limit = 3;
+
+        List<Member> members = jpaRepository.findByPage(age, offset, limit);
+        long totalCount = jpaRepository.totalCount(age);
+
+        assertThat(members.size()).isEqualTo(3);
+        assertThat(totalCount).isEqualTo(5);
+    }
 }

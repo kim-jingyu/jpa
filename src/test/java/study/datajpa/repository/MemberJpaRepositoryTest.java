@@ -94,4 +94,18 @@ class MemberJpaRepositoryTest {
         assertThat(members.size()).isEqualTo(3);
         assertThat(totalCount).isEqualTo(5);
     }
+
+    @Test
+    @DisplayName("JPA를 사용한 벌크성 수정 쿼리")
+    void bulkUpdate() {
+        jpaRepository.save(new Member("member1", 10));
+        jpaRepository.save(new Member("member2", 15));
+        jpaRepository.save(new Member("member3", 19));
+        jpaRepository.save(new Member("member4", 21));
+        jpaRepository.save(new Member("member5", 25));
+
+        int resultCount = jpaRepository.bulkAgePlus(20);
+
+        assertThat(resultCount).isEqualTo(2);
+    }
 }

@@ -35,6 +35,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     /**
      * 단순 값 하나 조회
      * JPA 값 타입 ( @Embedded ) 도 이 방식으로 조회할 수 있다.
+     *
      * @return
      */
     @Query("select m from Member m")
@@ -42,4 +43,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select new study.datajpa.repository.MemberDto(m.id, m.username, t.teamName) from Member m join m.team t")
     List<MemberDto> findMemberDto();
+
+    /**
+     * 컬렉션 파라미터 바인딩
+     * @param names
+     * @return List<Member>
+     */
+    @Query("select m from Member m where m.username in :names")
+    List<Member> findByNames(@Param("names") List<String> names);
 }

@@ -1,5 +1,6 @@
 package study.datajpa.repository;
 
+import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +29,8 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
     @Autowired
     TeamRepository teamRepository;
+    @Autowired
+    EntityManager em;
 
     @Test
     void testMember() {
@@ -247,5 +250,27 @@ class MemberRepositoryTest {
 
         PageRequest pageRequest = PageRequest.of(offset, limit);
         Page<Member> result = memberRepository.findMemberAllCountByAge(age, pageRequest);
+    }
+
+    @Test
+    @DisplayName("벌크성 수정 쿼리")
+    void 벌크성_수정_쿼리() {
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 15));
+        memberRepository.save(new Member("member3", 19));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 25));
+
+        int resultCount = memberRepository.bulkAgePlus(20);
+        assertThat(resultCount).isEqualTo(2);
+
+        em.flush();
+        em.clear();
+
+        List<Member> member4 = memberRepository.findByUsername("member4");
+
+        for (Member member : member4) {
+            System.out.println("member = " + member);
+        }
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import study.datajpa.entity.Member;
@@ -50,6 +51,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     /**
      * 컬렉션 파라미터 바인딩
+     *
      * @param names
      * @return List<Member>
      */
@@ -58,9 +60,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // 페이징과 정렬 사용
     Page<Member> findPageByUsername(String name, Pageable pageable); // Page -> count 쿼리 사용
+
     Slice<Member> findSliceByAge(int age, Pageable pageable); // Slice -> count 쿼리 사용 안함
+
     List<Member> findListByAge(int age, Pageable pageable); // List -> count 쿼리 사용 안함
+
     List<Member> findSortByUsername(String name, Sort sort); // Sort -> 정렬 기능
+
     Page<Member> findPageByAge(int age, Pageable pageable);
 
     // count 쿼리 분리
@@ -71,4 +77,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findTop2By();
 
     List<Member> findFirst3By();
+
+    // 벌크성 수정 쿼리
+    @Modifying(clearAutomatically = true)
+    @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
+    int bulkAgePlus(@Param("age") int age);
 }

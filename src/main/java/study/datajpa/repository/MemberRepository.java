@@ -8,6 +8,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
+import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @Query("select m from Member m")
     List<String> findUsernameList();
 
-    @Query("select new study.datajpa.repository.MemberDto(m.id, m.username, t.teamName) from Member m join m.team t")
+    @Query("select new study.datajpa.dto.MemberDto(m.id, m.username, t.teamName) from Member m join m.team t")
     List<MemberDto> findMemberDto();
 
     /**

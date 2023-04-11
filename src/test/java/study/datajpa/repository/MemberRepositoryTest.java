@@ -295,4 +295,17 @@ class MemberRepositoryTest {
 
 
     }
+
+    @Test
+    @DisplayName("JPA 쿼리 힌트")
+    void queryHint() {
+        memberRepository.save(new Member("userA", 10));
+        em.flush();
+        em.clear();
+
+        Member userA = memberRepository.findReadOnlyByUsername("userA");
+        userA.setUsername("userB");
+
+        em.flush(); // Update Query 가 실행되지 않는다.
+    }
 }

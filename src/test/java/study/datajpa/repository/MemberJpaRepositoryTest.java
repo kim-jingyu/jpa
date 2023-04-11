@@ -1,5 +1,6 @@
 package study.datajpa.repository;
 
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ class MemberJpaRepositoryTest {
 
     @Autowired
     MemberJpaRepository jpaRepository;
+    @Autowired
+    EntityManager em;
 
     @Test
     void testMember() {
@@ -107,5 +110,23 @@ class MemberJpaRepositoryTest {
         int resultCount = jpaRepository.bulkAgePlus(20);
 
         assertThat(resultCount).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("Auditing - 순수 JPA")
+    void auditing() throws InterruptedException {
+        Member userA = new Member("userA");
+        jpaRepository.save(userA);  // @PrePersist
+
+        Thread.sleep(200);
+        userA.setUsername("userB");
+
+        em.flush(); // @PreUpdate
+        em.clear();
+
+        Member foundUserA = jpaRepository.findById(userA.getId()).get();
+
+        System.out.println("foundUserA.getCreatedDate() = " + foundUserA.getCreatedDate());
+        System.out.println("foundUserA.getUpdatedDate() = " + foundUserA.getUpdatedDate());
     }
 }

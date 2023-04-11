@@ -308,4 +308,20 @@ class MemberRepositoryTest {
 
         em.flush(); // Update Query 가 실행되지 않는다.
     }
+
+    @Test
+    @DisplayName("사용자 정의 리포지토리 구현")
+    void 사용자_정의_리포지토리_구현() {
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 15));
+        memberRepository.save(new Member("member3", 19));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 25));
+
+        List<Member> result = memberRepository.findMemberCustom();
+
+        for (Member member : result) {
+            System.out.println("member.getUsername() = " + member.getUsername());
+        }
+    }
 }

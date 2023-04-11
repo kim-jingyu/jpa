@@ -19,11 +19,6 @@ public class DataJpaApplication {
 
 	@Bean
 	public AuditorAware<String> auditorProvider() {
-		return new AuditorAware<String>() {
-			@Override
-			public Optional<String> getCurrentAuditor() {
-				return Optional.of(UUID.randomUUID().toString());
-			}
-		};
+		return () -> Optional.of(UUID.randomUUID().toString());
 	}
 }

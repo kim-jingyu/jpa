@@ -3,7 +3,6 @@ plugins {
 	id 'org.springframework.boot' version '3.0.5'
 	id 'io.spring.dependency-management' version '1.1.0'
 //	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10" // querydsl 관련 명령어를 gradle 탭에 생성해준다.
-//	id 'java'
 }
 
 group = 'study'
@@ -54,27 +53,10 @@ sourceSets {
 	main.java.srcDirs += [ querydslDir ]
 }
 
-tasks.withType(JavaCompile){
+tasks.withType(JavaCompile) {
 	options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
 }
 
 clean.doLast {
 	file(querydslDir).deleteDir()
 }
-
-//querydsl {
-//	jpa = true
-//	querydslSourceDir = querydslDir
-//}
-//
-//sourceSets {
-//	main.java.srcDir querydslDir
-//}
-//
-//configurations {
-//	querydsl.extendsFrom compileClassPath
-//}
-//
-//compileQuerydsl {
-//	options.annotationProcessorPath = configurations.querydsl
-//}

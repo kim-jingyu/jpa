@@ -6,10 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
@@ -344,6 +341,38 @@ class MemberRepositoryTest {
 
         Specification<Member> spec = MemberSpec.username("user1").and(MemberSpec.teamName("teamA"));
         List<Member> result = memberRepository.findAll(spec);
+
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getUsername()).isEqualTo("user1");
+    }
+
+    @Test
+    @DisplayName("Query By Example")
+    void queryByExample() {
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member user1 = new Member("user1", 10, teamA);
+        Member user2 = new Member("user2", 20, teamA);
+        em.persist(user1);
+        em.persist(user2);
+
+        em.flush();
+        em.clear();
+
+        // Probe 생성
+        Member member = new Member("user1");
+        Team team = new Team("teamA");  // 내부조인으로 teamA 가능
+        member.setTeam(team);
+
+        // ExampleMatcher 생성
+        // age property 는 무시
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnorePaths("age");
+
+        Example<Member> example = Example.of(member, matcher);
+
+        List<Member> result = memberRepository.findAll(example);
 
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getUsername()).isEqualTo("user1");

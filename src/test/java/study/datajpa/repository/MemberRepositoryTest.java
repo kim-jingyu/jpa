@@ -10,7 +10,9 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
+import study.datajpa.dto.NestedClosedProjection;
 import study.datajpa.dto.UsernameOnly;
+import study.datajpa.dto.UsernameOnlyDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.MemberSpec;
 import study.datajpa.entity.Team;
@@ -394,9 +396,13 @@ class MemberRepositoryTest {
         em.clear();
 
         List<UsernameOnly> result = memberRepository.findProjectionByUsername("user1");
+        List<UsernameOnlyDto> result2 = memberRepository.findProjectionsDtoByUsername("user2");
+        List<UsernameOnly> result3 = memberRepository.findProjectionTByUsername("user1", UsernameOnly.class);
+        List<NestedClosedProjection> result4 = memberRepository.findProjectionTByUsername("user1", NestedClosedProjection.class);
 
-        for (UsernameOnly usernameOnly : result) {
-            System.out.println("usernameOnly = " + usernameOnly);
+        for (NestedClosedProjection nestedClosedProjection : result4) {
+            System.out.println("nestedClosedProjection.getUsername() = " + nestedClosedProjection.getUsername());
+            System.out.println("nestedClosedProjection.getTeam().getTeamName() = " + nestedClosedProjection.getTeam().getTeamName());
         }
     }
 }

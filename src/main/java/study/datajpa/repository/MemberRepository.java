@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Streamable;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.dto.UsernameOnly;
+import study.datajpa.dto.UsernameOnlyDto;
 import study.datajpa.entity.Member;
 
 import java.util.List;
@@ -123,4 +124,8 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
     // Projections
     List<UsernameOnly> findProjectionByUsername(String username);
+
+    List<UsernameOnlyDto> findProjectionsDtoByUsername(String username);
+
+    <T> List<T> findProjectionTByUsername(String username, Class<T> type);
 }

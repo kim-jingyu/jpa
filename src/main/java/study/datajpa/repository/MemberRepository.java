@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Streamable;
 import study.datajpa.dto.MemberDto;
+import study.datajpa.dto.UsernameOnly;
 import study.datajpa.entity.Member;
 
 import java.util.List;
@@ -119,4 +120,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     // Lock
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Member> findLockByUsername(String username);
+
+    // Projections
+    List<UsernameOnly> findProjectionByUsername(String username);
 }

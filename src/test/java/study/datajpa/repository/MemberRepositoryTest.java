@@ -10,6 +10,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
+import study.datajpa.dto.UsernameOnly;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.MemberSpec;
 import study.datajpa.entity.Team;
@@ -376,5 +377,26 @@ class MemberRepositoryTest {
 
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0).getUsername()).isEqualTo("user1");
+    }
+
+    @Test
+    @DisplayName("Projectios")
+    void projections() {
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member user1 = new Member("user1", 10, teamA);
+        Member user2 = new Member("user2", 20, teamA);
+        em.persist(user1);
+        em.persist(user2);
+
+        em.flush();
+        em.clear();
+
+        List<UsernameOnly> result = memberRepository.findProjectionByUsername("user1");
+
+        for (UsernameOnly usernameOnly : result) {
+            System.out.println("usernameOnly = " + usernameOnly);
+        }
     }
 }

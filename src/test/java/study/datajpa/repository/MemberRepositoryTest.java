@@ -166,6 +166,9 @@ class MemberRepositoryTest {
         Page<Member> result = memberRepository.findPageByAge(10, pageRequest);
         Page<MemberDto> dtoPage = result.map(m -> new MemberDto(m.getId(), m.getUsername(), null));
 
+        Sort sort = result.getPageable().getSort();
+        sort.stream().iterator().forEachRemaining(s-> System.out.println("s = " + s));
+
         List<Member> content = result.getContent(); // 조회된 데이터
         assertThat(content.size()).isEqualTo(3); // 조회된 데이터 수
         assertThat(result.getTotalElements()).isEqualTo(5); // 전체 데이터 수

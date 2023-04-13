@@ -8,6 +8,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.util.Streamable;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 

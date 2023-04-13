@@ -10,9 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
+import study.datajpa.entity.MemberSpec;
 import study.datajpa.entity.Team;
 
 import java.util.List;
@@ -167,7 +169,7 @@ class MemberRepositoryTest {
         Page<MemberDto> dtoPage = result.map(m -> new MemberDto(m.getId(), m.getUsername(), null));
 
         Sort sort = result.getPageable().getSort();
-        sort.stream().iterator().forEachRemaining(s-> System.out.println("s = " + s));
+        sort.stream().iterator().forEachRemaining(s -> System.out.println("s = " + s));
 
         List<Member> content = result.getContent(); // 조회된 데이터
         assertThat(content.size()).isEqualTo(3); // 조회된 데이터 수
@@ -324,5 +326,26 @@ class MemberRepositoryTest {
         for (Member member : result) {
             System.out.println("member.getUsername() = " + member.getUsername());
         }
+    }
+
+    @Test
+    @DisplayName("명세 기능 사용")
+    void specification() {
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member user1 = new Member("user1", 10, teamA);
+        Member user2 = new Member("user2", 20, teamA);
+        em.persist(user1);
+        em.persist(user2);
+
+        em.flush();
+        em.clear();
+
+        Specification<Member> spec = MemberSpec.username("user1").and(MemberSpec.teamName("teamA"));
+        List<Member> result = memberRepository.findAll(spec);
+
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getUsername()).isEqualTo("user1");
     }
 }

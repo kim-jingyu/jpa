@@ -126,6 +126,28 @@ public class QuerydslBasicTest {
     }
 
     @Test
+    @DisplayName("정렬")
+    void sorting() {
+        em.persist(new Member(null, 100));
+        em.persist(new Member("user5", 100));
+        em.persist(new Member("user6", 100));
+
+        List<Member> result = query
+                .selectFrom(member)
+                .where(member.age.loe(100))
+                .orderBy(member.age.desc(), member.username.asc().nullsLast())
+                .fetch();
+
+        Member user5 = result.get(0);
+        Member user6 = result.get(1);
+        Member userNull = result.get(2);
+
+        assertThat(user5.getUsername()).isEqualTo("user5");
+        assertThat(user6.getUsername()).isEqualTo("user6");
+        assertThat(userNull.getUsername()).isEqualTo(null);
+    }
+
+    @Test
     void joinTest1() {
         List<Member> members = query
                 .selectFrom(member)

@@ -219,6 +219,42 @@ public class QuerydslBasicTest {
         assertThat(teamB.get(member.age.avg())).isEqualTo(35);
     }
 
+    /**
+     * 기본 조인
+     * 팀 A에 소속된 모든 회원
+     */
+    @Test
+    void defaultJoin1() {
+        List<Member> result = query
+                .selectFrom(member)
+                .join(member.team, team)
+                .where(team.name.eq("teamA"))
+                .fetch();
+
+        assertThat(result)
+                .extracting("username")
+                .containsExactly("user1", "user2");
+    }
+
+    /**
+     * 세타 조인 - 연관관계가 없는 필드로 조인
+     * 회원의 이름이 팀 이름과 같은 회원 조회 (연관관계가 없음)
+     */
+    @Test
+    void thetaJoin() {
+        em.persist(new Member("teamA"));
+        em.persist(new Member("teamB"));
+
+        List<Member> result = query
+                .select(member)
+                .from(member, team)
+                .where(member.username.eq(team.name))
+                .fetch();
+
+        assertThat(result).extracting("username")
+                .containsExactly("teamA", "teamB");
+    }
+
     @Test
     void joinTest1() {
         List<Member> members = query
@@ -252,6 +288,45 @@ public class QuerydslBasicTest {
 
         for (Member member : members) {
             System.out.println("member = " + member);
+        }
+    }
+
+    /**
+     * on 절을 활용한 조인
+     *  1. 조인 대상 필터링
+     *  2. 연관관계 없는 엔티티를 외부 조인한다.
+     */
+
+    // 1. 조인 대상 필터링
+    @Test
+    void ON_조인_필터링() {
+        List<Tuple> result = query
+                .select(member, team)
+                .from(member)
+                .leftJoin(member.team, team)
+                .on(team.name.eq("teamA"))
+                .fetch();
+
+        for (Tuple tuple : result) {
+            System.out.println("tuple = " + tuple);
+        }
+    }
+
+    // 2. 연관관계 없는 엔티티의 외부 조인
+    @Test
+    void ON_연관관계_없는_엔티티의_외부_조인() {
+        em.persist(new Member("teamA"));
+        em.persist(new Member("teamB"));
+
+        List<Tuple> result = query
+                .select(member, team)
+                .from(member)
+                .leftJoin(team)
+                .on(member.username.eq(team.name))  // 서로 관계 없는 필드로 외부 조인
+                .fetch();
+
+        for (Tuple tuple : result) {
+            System.out.println("tuple = " + tuple);
         }
     }
 }

@@ -148,6 +148,35 @@ public class QuerydslBasicTest {
     }
 
     @Test
+    @DisplayName("페이징 - 조회 건수 제한")
+    void paging() {
+        List<Member> result = query
+                .selectFrom(member)
+                .orderBy(member.username.desc())
+                .offset(1)  // index 1부터 시작해서
+                .limit(3)   // 최대 3건 조회
+                .fetch();
+
+        assertThat(result.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("페이징 - 전체 조회 수")
+    void paging2() {
+        QueryResults<Member> queryResults = query
+                .selectFrom(member)
+                .orderBy(member.username.desc())
+                .offset(0)
+                .limit(3)
+                .fetchResults();
+
+        assertThat(queryResults.getTotal()).isEqualTo(4);
+        assertThat(queryResults.getOffset()).isEqualTo(0);
+        assertThat(queryResults.getLimit()).isEqualTo(3);
+        assertThat(queryResults.getResults().size()).isEqualTo(3);
+    }
+
+    @Test
     void joinTest1() {
         List<Member> members = query
                 .selectFrom(member)

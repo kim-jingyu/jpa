@@ -4,6 +4,7 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +30,8 @@ import static study.querydsl.entity.QTeam.*;
 public class QuerydslBasicTest {
     @Autowired
     EntityManager em;
-
+    @Autowired
+    EntityManagerFactory emf;
     JPAQueryFactory query;
 
 
@@ -328,6 +330,37 @@ public class QuerydslBasicTest {
         for (Tuple tuple : result) {
             System.out.println("tuple = " + tuple);
         }
+    }
+
+    // fetch join 미적용
+    @Test
+    void fetch_join_미적용() {
+        em.flush();
+        em.clear();
+
+        Member user1 = query
+                .selectFrom(member)
+                .where(member.username.eq("user1"))
+                .fetchOne();
+
+        boolean loaded = emf.getPersistenceUnitUtil().isLoaded(user1.getTeam());
+        assertThat(loaded).as("페치 조인 미적용").isFalse();
+    }
+
+    // fetch join 적용
+    @Test
+    void fetch_join_적용() {
+        em.flush();
+        em.clear();
+
+        Member user1 = query
+                .selectFrom(member)
+                .join(member.team, team).fetchJoin()
+                .where(member.username.eq("user1"))
+                .fetchOne();
+
+        boolean loaded = emf.getPersistenceUnitUtil().isLoaded(user1.getTeam());
+        assertThat(loaded).as("페치 조인 적용").isTrue();
     }
 }
 

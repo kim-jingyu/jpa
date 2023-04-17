@@ -2,6 +2,8 @@ package study.querydsl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -449,6 +451,65 @@ public class QuerydslBasicTest {
                 .fetch();
 
 
+    }
+
+    // Case 문. select, 조건절(where), order by 에서 사용 가능
+
+    // 단순한 조건
+    @Test
+    void case1() {
+        List<String> result = query
+                .select(member.age
+                        .when(10).then("열살")
+                        .when(20).then("스무살")
+                        .otherwise("기타"))
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+    }
+
+    // 복잡한 조건
+    @Test
+    void case2() {
+        List<String> result = query
+                .select(new CaseBuilder()
+                        .when(member.age.between(0, 20)).then("0~20살")
+                        .when(member.age.between(21, 30)).then("21~30살")
+                        .otherwise("기타"))
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+    }
+
+    // orderBy 에서 case 문 함께 사용하기
+    // rankPath 처럼 복잡한 조건을 변수로 선언하여 select 절, orderBy 절에서 사용할 수 있다.
+    @Test
+    void case3() {
+        NumberExpression<Integer> rankPath = new CaseBuilder()
+                .when(member.age.between(0, 20)).then(2)
+                .when(member.age.between(21, 30)).then(1)
+                .otherwise(3);
+
+        List<Tuple> result = query
+                .select(member.username, member.age, rankPath)
+                .from(member)
+                .orderBy(rankPath.desc())
+                .fetch();
+
+        for (Tuple tuple : result) {
+            String username = tuple.get(member.username);
+            Integer age = tuple.get(member.age);
+            Integer rank = tuple.get(rankPath);
+            System.out.print("username = " + username);
+            System.out.print(", age = " + age);
+            System.out.println(", rank = " + rank);
+        }
     }
 }
 

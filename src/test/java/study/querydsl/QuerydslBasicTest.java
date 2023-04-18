@@ -3,6 +3,7 @@ package study.querydsl;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -510,6 +511,33 @@ public class QuerydslBasicTest {
             System.out.print(", age = " + age);
             System.out.println(", rank = " + rank);
         }
+    }
+
+    // 상수, 문자 더하기
+
+    // 상수가 필요하면 Expressions.constant (xxx) 사용
+    @Test
+    void 상수() {
+        List<Tuple> fetch = query
+                .select(member.username, Expressions.constant("A"))
+                .from(member)
+                .fetch();
+
+        for (Tuple tuple : fetch) {
+            System.out.println("tuple = " + tuple);
+        }
+    }
+
+    // 문자 더하기 concat
+    @Test
+    void 문자_더하기() {
+        String result = query
+                .select(member.username.concat("_").concat(member.age.stringValue()))
+                .from(member)
+                .where(member.username.eq("user1"))
+                .fetchOne();
+
+        System.out.println("result = " + result);
     }
 }
 

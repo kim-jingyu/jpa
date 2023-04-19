@@ -43,4 +43,24 @@ class MemberJpaRepositoryTest {
         List<Member> foundMemberByName = memberJpaRepository.findByUsername("user1");
         assertThat(foundMemberByName).containsExactly(user1);
     }
+
+    @Test
+    @DisplayName("querydsl 테스트")
+    void querydslTest() {
+        // 저장 기능 테스트
+        Member user1 = new Member("user1", 10);
+        memberJpaRepository.save(user1);
+
+        // 회원 ID로 찾기 테스트
+        Member foundMember = memberJpaRepository.findById(user1.getId()).get();
+        assertThat(foundMember).isEqualTo(user1);
+
+        // 모든 회원 찾기 테스트
+        List<Member> allMembers = memberJpaRepository.findAll_querydsl();
+        assertThat(allMembers).containsExactly(user1);
+
+        // 회원 이름으로 찾기 테스트
+        List<Member> foundMemberByName = memberJpaRepository.findByUsername_querydsl("user1");
+        assertThat(foundMemberByName).containsExactly(user1);
+    }
 }

@@ -13,6 +13,7 @@ import static study.querydsl.entity.QMember.*;
 
 /**
  * 순수 JPA 리포지토리
+ * Querydsl 추가
  */
 @Repository
 public class MemberJpaRepository {
@@ -38,11 +39,24 @@ public class MemberJpaRepository {
         ).getResultList();
     }
 
+    public List<Member> findAll_querydsl() {
+        return queryFactory
+                .selectFrom(member)
+                .fetch();
+    }
+
     public List<Member> findByUsername(String username) {
         return em.createQuery(
                 "select m from Member m" +
                         " where m.username = :username", Member.class)
                 .setParameter("username", username)
                 .getResultList();
+    }
+
+    public List<Member> findByUsername_querydsl(String username) {
+        return queryFactory
+                .selectFrom(member)
+                .where(member.username.eq(username))
+                .fetch();
     }
 }

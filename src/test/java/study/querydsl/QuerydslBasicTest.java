@@ -786,6 +786,41 @@ public class QuerydslBasicTest {
 
         assertThat(result).extracting("username").containsExactly("user1");
     }
+
+    @Test
+    @DisplayName("SQL function 호출하기")
+    void sqlFunction() {
+        // member -> M 으로 변경하는 replace 함수 사용
+        List<String> result = query
+                .select(Expressions.stringTemplate("function('replace', {0}, {1}, {2})", member.username, "user", "M"))
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+
+        List<String> result2 = query
+                .select(member.username)
+                .from(member)
+                .where(member.username.eq(Expressions.stringTemplate("function('upper', {0})", member.username)))
+                .fetch();
+
+        for (String s : result2) {
+            System.out.println("s = " + s);
+        }
+
+        List<String> result3 = query
+                .select(member.username.upper())
+                .from(member)
+                .fetch();
+
+        for (String s : result3) {
+            System.out.println("s = " + s);
+        }
+    }
+
+
 }
 
 

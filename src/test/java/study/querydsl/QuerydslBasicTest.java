@@ -742,6 +742,50 @@ public class QuerydslBasicTest {
     private BooleanExpression ageEq(Integer ageCond) {
         return ageCond != null ? member.age.eq(ageCond) : null;
     }
+
+    @Test
+    @DisplayName("수정 벌크 연산")
+    void bulkOperation() {
+        // 쿼리 한번으로 대량 데이터 수정
+        long nameCount = query
+                .update(member)
+                .set(member.username, "비회원")
+                .where(member.age.lt(28))
+                .execute();
+
+        long ageCount = query
+                .update(member)
+                .set(member.age, member.age.multiply(2))
+                .execute();
+
+        em.flush();
+        em.clear();
+
+        List<Member> result = query
+                .selectFrom(member)
+                .fetch();
+
+        assertThat(result).extracting("username").containsExactly("비회원", "비회원", "user3", "user4");
+        assertThat(result).extracting("age").containsExactly(20, 40, 60, 80);
+    }
+
+    @Test
+    @DisplayName("삭제 벌크 연산")
+    void bulkOperation2() {
+        long deleteCount = query
+                .delete(member)
+                .where(member.age.gt(18))
+                .execute();
+
+        em.flush();
+        em.clear();
+
+        List<Member> result = query
+                .selectFrom(member)
+                .fetch();
+
+        assertThat(result).extracting("username").containsExactly("user1");
+    }
 }
 
 

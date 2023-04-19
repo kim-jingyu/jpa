@@ -1,9 +1,12 @@
 package study.querydsl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -305,8 +308,8 @@ public class QuerydslBasicTest {
 
     /**
      * on 절을 활용한 조인
-     *  1. 조인 대상 필터링
-     *  2. 연관관계 없는 엔티티를 외부 조인한다.
+     * 1. 조인 대상 필터링
+     * 2. 연관관계 없는 엔티티를 외부 조인한다.
      */
 
     // 1. 조인 대상 필터링
@@ -667,6 +670,77 @@ public class QuerydslBasicTest {
         for (MemberDto memberDto : result) {
             System.out.println("memberDto = " + memberDto);
         }
+    }
+
+    @Test
+    @DisplayName("distinct")
+    void distinct() {
+        List<String> result = query
+                .select(member.username).distinct()
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+    }
+
+    @Test
+    @DisplayName("동적 쿼리 - BooleanBuilder 사용")
+    void 동적쿼리_BooleanBuilder() {
+        String usernameParam = "user1";
+        Integer ageParam = 10;
+
+        List<Member> result = searchMember1(usernameParam, ageParam);
+
+        assertThat(result).extracting("username").containsExactly("user1");
+    }
+
+    private List<Member> searchMember1(String usernameCond, Integer ageCond) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if (usernameCond != null) {
+            builder.and(member.username.eq(usernameCond));
+        }
+        if (ageCond != null) {
+            builder.and(member.age.eq(ageCond));
+        }
+        List<Member> result = query
+                .selectFrom(member)
+                .where(builder)
+                .fetch();
+        return result;
+    }
+
+    @Test
+    @DisplayName("동적 쿼리 - Where 다중 파라미터 사용")
+    void 동적쿼리_WhereParam() {
+        String usernameParam = "user1";
+        Integer ageParam = 10;
+
+        List<Member> result = searchMember2(usernameParam, ageParam);
+
+        assertThat(result).extracting("username").containsExactly("user1");
+        assertThat(result).extracting("age").containsExactly(10);
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    private List<Member> searchMember2(String usernameCond, Integer ageCond) {
+        return query
+                .selectFrom(member)
+                .where(allEq(usernameCond, ageCond))
+                .fetch();
+    }
+
+    private Predicate allEq(String usernameCond, Integer ageCond) {
+        return usernameEq(usernameCond).and(ageEq(ageCond));
+    }
+
+    private BooleanExpression usernameEq(String usernameCond) {
+        return usernameCond != null ? member.username.eq(usernameCond) : null;
+    }
+
+    private BooleanExpression ageEq(Integer ageCond) {
+        return ageCond != null ? member.age.eq(ageCond) : null;
     }
 }
 

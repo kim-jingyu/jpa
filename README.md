@@ -1,1 +1,1 @@
-# inflearn-spring-cloud
+# jpa

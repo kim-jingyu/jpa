@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.1">
+    <persistence-unit name="hello">
+<!--        <class>jpabasic.real.domain.Member</class>-->
+<!--        <class>jpabasic.real.domain.item.Item</class>-->
+<!--        <class>jpabasic.real.domain.Order</class>-->
+<!--        <class>jpabasic.real.domain.OrderItem</class>-->
+<!--        <class>jpabasic.real.domain.OrderStatus</class>-->
+<!--        <class>jpabasic.real.domain.Delivery</class>-->
+<!--        <class>jpabasic.real.domain.Category</class>-->
+<!--        <class>jpabasic.real.domain.DeliveryStatus</class>-->
+<!--        <class>jpabasic.real.domain.item.Album</class>-->
+<!--        <class>jpabasic.real.domain.item.Book</class>-->
+<!--        <class>jpabasic.real.domain.item.Movie</class>-->
+<!--        <class>jpabasic.ex2.domain.Member</class>-->
+<!--        <class>jpabasic.ex2.domain.Team</class>-->
+<!--        <class>jpabasic.ex1.domain.Member</class>-->
+<!--        <class>jpabasic.ex1.domain.Address</class>-->
+<!--        <class>jpabasic.ex1.domain.Period</class>-->
+<!--        <class>jpabasic.ex1.domain.AddressEntity</class>-->
+        <class>jpabasic.jpql.domain.Member</class>
+        <class>jpabasic.jpql.domain.Team</class>
+        <class>jpabasic.jpql.domain.Orders</class>
+        <class>jpabasic.jpql.domain.Product</class>
+        <class>jpabasic.jpql.domain.Cellphone</class>
+        <class>jpabasic.jpql.domain.Car</class>
+        <class>jpabasic.jpql.domain.Tv</class>
+        <properties>
+            <!-- 필수 속성 -->
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
+            <property name="javax.persistence.jdbc.password" value=""/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/realjpa"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <!-- 옵션 -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.use_sql_comments" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.default_batch_fetch_size" value="100"/>
+        </properties>
+    </persistence-unit>
+</persistence>
